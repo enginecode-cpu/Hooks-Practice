@@ -10,6 +10,13 @@ import Confirm from "./components/Confirm";
 import useConfirm from "./libs/useConfirm";
 import PreventLeave from "./components/PreventLeave";
 import usePreventLeave from "./libs/usePreventLeave";
+import usePageLeave from "./libs/usePageLeave";
+import useFadeIn from "./libs/useFadeIn";
+import useNetwork from "./libs/useNetwork";
+import useScroll from "./libs/useScroll";
+import useFullscreen from "./libs/useFullscreen";
+import useNotification from "./libs/useNotification";
+import useAxios from "./libs/useAxios";
 
 function App() {
   const maxLen = (value) => value.length <= 10;
@@ -48,6 +55,26 @@ function App() {
 
   const { enablePrevent, disablePrevent } = usePreventLeave();
 
+  const begForLife = () => {
+    console.log("Pls don't leave");
+  };
+
+  usePageLeave(begForLife);
+
+  const { el } = useFadeIn(3, 4);
+
+  const handleNetworkChange = (online) => {
+    console.log(online ? "We just went Online" : "We are Offline");
+  };
+  const isOnline = useNetwork(handleNetworkChange);
+
+  const { y } = useScroll();
+
+  const { element, triggerFull } = useFullscreen();
+
+  const triggerNoti = useNotification("Why not use Macbook pro?");
+
+  const { loading, data, error, refetch } = useAxios();
   return (
     <div>
       <div className="useInput">
@@ -70,6 +97,32 @@ function App() {
       </div>
       <div className="usePreventLeave">
         <PreventLeave onProtect={enablePrevent} onUnprotect={disablePrevent} />
+      </div>
+      <div className="useFadeIn">
+        <h2 ref={el} style={{ opacity: 0 }}>
+          This is useFadeIn
+        </h2>
+      </div>
+      <div className="useNetwork">{isOnline ? "Online" : "Offline"}</div>
+      <div className="useScroll">
+        <h2 style={{ color: y === 0 ? "blue" : "red" }}>Hi</h2>
+      </div>
+      <div className="useFullscreen">
+        <img
+          ref={element}
+          src="https://img1.daumcdn.net/thumb/C500x500.fpng/?fname=http://t1.daumcdn.net/brunch/service/user/2YH6/image/-im-bnvX33JVTe800JHLMcNvmwc.png"
+          alt="멋사"
+          width="100"
+        />
+        <button onClick={triggerFull}>Fullscreen</button>
+        <div className="useNotification">
+          <button onClick={triggerNoti}>Hello</button>
+        </div>
+        <div className="useAxios">
+          <h1></h1>
+          <h2>{loading && "Loading"}</h2>
+          <button onClick={refetch}>Refetch</button>
+        </div>
       </div>
     </div>
   );
